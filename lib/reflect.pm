@@ -5,10 +5,9 @@ our $VERSION = '0.1';
 
 any '**' => sub {
     content_type 'text/plain';
-    my $request = { %{ request() } };
-    %$request
-        = map { s/([[:cntrl:]])/sprintf '\x%02x', ord $1/eg; $_ } %$request;
-    to_dumper $request;
+    my $value = to_dumper($request);
+    $value =~ s/([[:cntrl:]])/sprintf '\x%02x', ord $1/eg;
+    $value;
 };
 
 true;
