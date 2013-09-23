@@ -1,11 +1,11 @@
 package reflect;
 use Dancer ':syntax';
-use Data::Dumper;
 
 our $VERSION = '0.1';
 
-get '/' => sub {
-    Dumper(request())
+any '*' => sub {
+    content_type 'text/plain';
+    to_dumper request();
 };
 
 true;
