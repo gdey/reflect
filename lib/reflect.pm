@@ -11,6 +11,15 @@ any '**' => sub {
     content_type 'text/plain';
     my $request = request();
 
+    my $response
+        = Data::Dumper->new([$request] => [qw(*request)])
+            ->Indent(1)
+            ->Useqq(1)
+            ->Purity(0)
+            ->Quotekeys(0)
+            ->Sortkeys(1)
+            ->Dump();
+
     # mongodb://reflect:reflect123@ds049198.mongolab.com:49198/reflect-db
     MongoDB::MongoClient->new(
         host => 'mongodb://'
@@ -20,15 +29,9 @@ any '**' => sub {
     )
         ->get_database('reflect-db')
         ->get_collection('requests')
-        ->insert($request);
+        ->insert({ request => $response });
 
-    Data::Dumper->new([$request] => [qw(*request)])
-        ->Indent(1)
-        ->Useqq(1)
-        ->Purity(0)
-        ->Quotekeys(0)
-        ->Sortkeys(1)
-        ->Dump();
+    return $response;
 };
 
 true;
